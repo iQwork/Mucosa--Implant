@@ -1,0 +1,6 @@
+{
+  "name": "منصة الدكتور ياسر ضياء الأسدي | Mucosa-Implant Interface",
+  "description": "أكاديمية الدكتور ياسر ضياء الأسدي التفاعلية لطب وجراحة الفم والأسنان - واجهة الغشاء المخاطي والزرعة السنية (Mucosa-Implant Interface)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
