@@ -2,27 +2,34 @@ const TOPIC_STUDIOS = {
   "p1-t1": {
     topicId: "p1-t1",
     simId: "p1-implant-parts",
-    imageUrl: "./src/assets/images/p1_t1_implant_parts_1795710167734.jpg",
+    imageUrl: "./src/assets/images/p1_t1_base_empty_1795714272701.jpg",
     xrayImageUrl: "./src/assets/images/p1_t1_xray_1795710168445.jpg",
+    extraImages: {
+      screw: "./src/assets/images/p1_t1_screw.png",
+      driver: "./src/assets/images/p1_t1_driver.png",
+      screwXray: "./src/assets/images/p1_t1_screw_xray.png",
+      driverXray: "./src/assets/images/p1_t1_driver_xray.png"
+    },
     supportsXray: true,
-    imageAlt: "Cutaway anatomical view of single dental implant between natural teeth showing crown, abutment, retaining screw, and titanium fixture in alveolar bone",
+    imageAlt: "Cutaway anatomical view of single dental implant between natural teeth showing hollow abutment bore with movable titanium retaining screw PNG and stainless hex torque driver PNG",
     hudTitleAr: "أجزاء الزرعة السنية الأربعة وموقعها في العظم واللثة",
     hudBadgeEn: "1. Crown · 2. Abutment Screw · 3. Abutment · 4. Fixture",
     interactiveParam: {
-      labelAr: "عمق تثبيت برغي الدعامة وتجمع أجزاء الزرعة:",
+      labelAr: "شد وتثبيت برغي الدعامة داخل الزرعة (Torque):",
       minLabel: "مفكوك 0%",
       maxLabel: "مشدود 100%",
-      defaultVal: 78,
+      defaultVal: 30,
       formatReadout: (v) => {
-        if (v >= 72) return { text: `تطابق وتثبيت مثالي (${Math.round(v)}%)`, tone: "ok" };
-        if (v >= 35) return { text: `ربط جزئي للدعامة (${Math.round(v)}%)`, tone: "info" };
-        return { text: `فراغ ميكانيكي غير مشدود (${Math.round(v)}%)`, tone: "warn" };
+        const ncm = Math.round((v / 100) * 35);
+        if (v >= 78) return { text: `مثبت ومشدود بالكامل (${ncm} Ncm)`, tone: "ok" };
+        if (v >= 35) return { text: `جاري شد البرغي (${ncm} Ncm)`, tone: "info" };
+        return { text: `برغي مرفوع غير مشدود (${ncm} Ncm)`, tone: "warn" };
       }
     },
     dragGizmo: {
       kind: "line",
-      p0: { x: 0.505, y: 0.24 },
-      p1: { x: 0.505, y: 0.66 },
+      p0: { x: 0.625, y: 0.11 },
+      p1: { x: 0.625, y: 0.34 },
       handleLabel: "اسحب شد البرغي"
     },
     targets: [
@@ -32,7 +39,7 @@ const TOPIC_STUDIOS = {
         titleEn: "1. Implant Crown",
         descIq: "التاج هو الجزء الظاهر بالفم اللي يعوض السن المفقود ويركب فوك الدعامة.",
         syncKeywords: ["missing tooth", "Crown"],
-        posPct: { x: 50, y: 20 },
+        posPct: { x: 45, y: 20 },
         color: "#FBBF24"
       },
       {
@@ -41,7 +48,7 @@ const TOPIC_STUDIOS = {
         titleEn: "2. Abutment Retaining Screw",
         descIq: "البرغي الداخلي رقم 2 بالشريحة الرابعة هو اللي يشد الدعامة بقوة داخل جسم الزرعة.",
         syncKeywords: ["Abutment screw", "Numbered"],
-        posPct: { x: 50.5, y: 31 },
+        posPct: { x: 46, y: 31 },
         color: "#38BDF8"
       },
       {
@@ -50,7 +57,7 @@ const TOPIC_STUDIOS = {
         titleEn: "3. Titanium Abutment",
         descIq: "الدعامة تخترق الغشاء المخاطي وتربط التاج الخزفي بجسم الزرعة المدفون بالعظم.",
         syncKeywords: ["connects the crown", "Abutment"],
-        posPct: { x: 50, y: 41 },
+        posPct: { x: 56, y: 41 },
         color: "#2DD4BF"
       },
       {
@@ -66,14 +73,14 @@ const TOPIC_STUDIOS = {
     scenarios: [
       {
         id: "sc-parts-order",
-        labelAr: "1. ترتيب أجزاء الزرعة من التاج للعظم",
-        badgeEn: "4-Part Implant Assembly Sequence",
+        labelAr: "1. ترتيب أجزاء الزرعة وشد البرغي",
+        badgeEn: "4-Part Implant Assembly & Screw Tightening",
         duration: 8,
-        focus: { cx: 0.5, cy: 0.48, scale: 1 },
-        highlightTargetId: "t3",
-        defaultParam: 78,
-        seeIq: "قدامك مقطع تشريحي لزرعة كاملة بين سنين طبيعيين: التاج الأبيض فوك وبعده برغي الدعامة والدعامة اللي تعبر اللثة وجوا بالعظم مسننات الـ Fixture.",
-        whyIq: "لازم تفهم ترتيب هاي القطع الأربعة لأن التقاء اللثة يصير تحديداً حول الدعامة وعنق الـ Fixture بينما التاج يتحمل المضغ.",
+        focus: { cx: 0.5, cy: 0.46, scale: 1 },
+        highlightTargetId: "t2",
+        defaultParam: 30,
+        seeIq: "اسحب مقبض شد البرغي ليجوا حتى تشوف برغي التيتانيوم ومفك الـ Hex ينزلون فعلياً داخل مجرى الدعامة وجسم الزرعة لحد ما ينقفل تماماً بعزم 35 Ncm.",
+        whyIq: "لازم تفهم ترتيب هاي القطع الأربعة لأن التقاء اللثة يصير تحديداً حول الدعامة وعنق الـ Fixture بينما البرغي يثبت الدعامة بقوة بالعظم.",
         tipIq: "أجزاء الزرعة بالترتيب: 1 التاج (يعوض السن) و 2 برغي الدعامة و 3 الدعامة (تربط التاج بالمثبت) و 4 المثبت التيتانيوم (يشبه البرغي بالعظم).",
         tipEn: "Crown replaces missing tooth · Abutment connects crown to fixture · Fixture = titanium screw placed directly into bone (Slide 4 adds #2 Abutment screw)."
       },
@@ -84,20 +91,144 @@ const TOPIC_STUDIOS = {
         duration: 8,
         focus: { cx: 0.5, cy: 0.5, scale: 1.25 },
         highlightTargetId: "t4",
-        defaultParam: 90,
+        defaultParam: 45,
         xraySuggested: true,
-        seeIq: "في أشعة X-Ray الحقيقية تشوف الكثافة الشعاعية العالية للتاج والدعامة والفراغ الداخلي للبرغي ومسننات التيتانيوم داخل العظم.",
-        whyIq: "الأشعة هي اللي تأكدلنا بالعيادة إن الدعامة كاعدة صح 100% على منصة الزرعة بدون أي فراغ ميكانيكي.",
-        tipIq: "بدّل إلى وضع [تشريح ↔ أشعة] حتى تقارن مكان كل قطعة بين الصورة التشريحية والأشعة الحقيقية.",
-        tipEn: "Radiopaque titanium fixture threads and abutment seating sit directly inside trabecular & cortical bone adjacent to natural tooth PDL spaces."
+        seeIq: "في أشعة X-Ray الحقيقية تشوف الكثافة الشعاعية العالية للتاج والدعامة والبرغي ومفك الـ Hex وهو ينزل داخل القناة المظلمة (Radiolucent bore) بالعظم.",
+        whyIq: "الأشعة هي اللي تأكدلنا بالعيادة إن البرغي والدعامة كاعدين صح 100% على منصة الزرعة بدون أي فراغ ميكانيكي.",
+        tipIq: "اسحب شد البرغي بوضع [أشعة X-Ray] أو [تشريح ↔ أشعة] حتى تشوف حركة البرغي والمفك مباشرة داخل الأشعة السينية.",
+        tipEn: "Radiopaque titanium screw & stainless driver advance down the radiolucent internal bore until fully seated inside the fixture threads."
       }
     ],
     drawOverlay(ctx, _w, _h, t, st, toPx, h2) {
-      const pTop = toPx(0.505, 0.25);
-      const pBot = toPx(0.505, 0.44 + (st.paramVal / 100) * 0.2);
-      h2.drawFlowTrack(ctx, [pTop, pBot], t, st.paramVal >= 72 ? "#2DD4BF" : "#F59E0B", { width: 2.2, pulseCount: 2, showTip: true });
-      if (st.scenarioIdx === 1) {
-        h2.drawFocusAperture(ctx, { x: 0.5, y: 0.52 }, 0.26, 0.35);
+      const u = Math.max(0, Math.min(1, st.paramVal / 100));
+      const turnAngle = u * Math.PI * 10;
+      const threadMicroStep = (1 - u) * 0.002 * Math.sin(turnAngle);
+
+      const renderAssembly = (isXray, clipMinX, clipMaxX) => {
+        const hasClip = clipMinX !== void 0 || clipMaxX !== void 0;
+        const x0 = Math.max(0, clipMinX ?? 0);
+        const x1 = Math.max(x0, clipMaxX ?? _w);
+
+        const baseRot = isXray ? -0.014 : 0;
+        const screwTopY = (isXray ? 0.132 + u * 0.138 : 0.13 + u * 0.098) + threadMicroStep;
+        const axisX = isXray
+          ? 0.5065 - ((screwTopY - 0.27) * Math.sin(baseRot)) / (16 / 9)
+          : 0.5062;
+        const screwHeight = isXray ? 0.292 : 0.315;
+        const driverTipY = screwTopY + 0.012;
+        const driverTipX = axisX - (0.012 * Math.sin(baseRot)) / (16 / 9);
+        const driverHeight = isXray ? 0.132 : 0.135;
+
+        // Cylindrical internal bore shading beneath the descending screw
+        ctx.save();
+        if (hasClip) {
+          ctx.beginPath();
+          ctx.rect(x0, 0, x1 - x0, _h);
+          ctx.clip();
+        }
+        if (!isXray) {
+          const boreTop = toPx(axisX - 0.023, 0.228);
+          const boreBot = toPx(axisX + 0.023, 0.548);
+          const boreGrad = ctx.createLinearGradient(boreTop.x, 0, boreBot.x, 0);
+          boreGrad.addColorStop(0, "rgba(8, 12, 18, 0.58)");
+          boreGrad.addColorStop(0.5, "rgba(8, 12, 18, 0.16)");
+          boreGrad.addColorStop(1, "rgba(8, 12, 18, 0.58)");
+          ctx.fillStyle = boreGrad;
+          ctx.fillRect(boreTop.x, boreTop.y, boreBot.x - boreTop.x, boreBot.y - boreTop.y);
+        }
+        ctx.restore();
+
+        // Real photorealistic Titanium Abutment Screw PNG (Dark gunmetal in Anatomy, Bright Radiopaque White in X-Ray)
+        const screwKey = isXray ? "screwXray" : "screw";
+        const driverKey = isXray ? "driverXray" : "driver";
+        const screwRect = h2.drawPngSprite(ctx, screwKey, axisX, screwTopY, screwHeight, {
+          anchorX: 0.5,
+          anchorY: 0,
+          minScreenX: clipMinX,
+          maxScreenX: clipMaxX,
+          rotationRad: baseRot,
+          clipRect: isXray ? { x: 0.43, y: 0.01, w: 0.15, h: 0.564 } : { x: 0.44, y: 0.01, w: 0.13, h: 0.555 },
+          alpha: isXray ? 0.97 : 1,
+          shadow: true,
+          shadowColor: isXray ? "rgba(6, 16, 28, 0.45)" : "rgba(0, 0, 0, 0.48)",
+          shadowBlur: isXray ? 3 : 7,
+          shadowOffsetX: isXray ? 0 : 2,
+          shadowOffsetY: isXray ? 0 : 3
+        });
+
+        // Subtle helical specular sweep across screw head during turns
+        if (screwRect && u < 0.99) {
+          ctx.save();
+          if (hasClip) {
+            ctx.beginPath();
+            ctx.rect(x0, 0, x1 - x0, _h);
+            ctx.clip();
+          }
+          const sweepX = screwRect.x + Math.sin(turnAngle) * (screwRect.w * 0.24);
+          const sheen = ctx.createLinearGradient(sweepX - 8, 0, sweepX + 8, 0);
+          sheen.addColorStop(0, "rgba(255,255,255,0)");
+          sheen.addColorStop(0.5, isXray ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.28)");
+          sheen.addColorStop(1, "rgba(255,255,255,0)");
+          ctx.fillStyle = sheen;
+          ctx.fillRect(screwRect.x - screwRect.w * 0.45, screwRect.y, screwRect.w * 0.9, screwRect.h * 0.28);
+          ctx.restore();
+        }
+
+        // Real photorealistic Stainless Hex Torque Screwdriver PNG engaged in hex socket
+        const driverTilt = baseRot + (u < 0.97 ? Math.sin(turnAngle + t * Math.PI * 2) * 0.016 : 0);
+        h2.drawPngSprite(ctx, driverKey, driverTipX, driverTipY, driverHeight, {
+          anchorX: 0.5,
+          anchorY: 1,
+          minScreenX: clipMinX,
+          maxScreenX: clipMaxX,
+          rotationRad: driverTilt,
+          alpha: isXray ? 0.97 : 1,
+          shadow: true,
+          shadowColor: isXray ? "rgba(6, 16, 28, 0.45)" : "rgba(0, 0, 0, 0.42)",
+          shadowBlur: isXray ? 3 : 9,
+          shadowOffsetX: isXray ? 0 : 3,
+          shadowOffsetY: isXray ? 0 : 3
+        });
+
+        // Clockwise torque rotation indicator + link to drag handle (clipped to active region)
+        ctx.save();
+        if (hasClip) {
+          ctx.beginPath();
+          ctx.rect(x0, 0, x1 - x0, _h);
+          ctx.clip();
+        }
+        const orbitPos = toPx(driverTipX, Math.max(0.06, driverTipY - 0.068));
+        h2.drawOrbitPath(ctx, orbitPos.x, orbitPos.y, 20, 7.5, (t * 1.15 + u * 2.5) % 1, {
+          startAngle: 0.15,
+          spanAngle: Math.PI * 1.6,
+          color: u >= 0.78 ? "#2DD4BF" : "#38BDF8"
+        });
+        const gLinkY = 0.11 + u * (0.34 - 0.11);
+        h2.drawFlowTrack(
+          ctx,
+          [toPx(0.605, gLinkY), toPx(driverTipX + 0.025, Math.max(0.075, driverTipY - 0.035))],
+          t,
+          u >= 0.78 ? "#2DD4BF" : "#F59E0B",
+          { width: 1.8, pulseCount: 1, dashed: true }
+        );
+        if (u >= 0.78) {
+          const seatPt = toPx(isXray ? 0.5055 : axisX, isXray ? 0.415 : 0.43);
+          h2.drawShockRings(ctx, seatPt.x, seatPt.y, t, 24, "#2DD4BF");
+        }
+        ctx.restore();
+      };
+
+      if (st.splitActive) {
+        renderAssembly(false, 0, st.splitScreenX);
+        renderAssembly(true, st.splitScreenX, _w);
+      } else if (st.xrayMode) {
+        renderAssembly(true, void 0, void 0);
+      } else {
+        renderAssembly(false, void 0, void 0);
+      }
+
+      if (st.scenarioIdx === 1 || st.xrayMode) {
+        h2.drawFocusAperture(ctx, { x: 0.51, y: 0.54 }, 0.26, 0.28);
       }
     }
   },

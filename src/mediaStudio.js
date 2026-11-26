@@ -226,6 +226,8 @@ const DRAW_HELPERS = {
   // Bound per-frame inside mountMediaStudio; safe fallbacks for headless verification
   drawExtraImage() {
   },
+  drawPngSprite() {
+  },
   drawRegionWarp() {
   },
   drawRegionFilter() {
@@ -1100,6 +1102,49 @@ function mountMediaStudio(stageEl, topic) {
         ctx.filter = "none";
         ctx.restore();
       },
+      drawPngSprite(ctx, key, cxNorm, anchorYNorm, heightNorm, opts = {}) {
+        const im = extraImgMap[key];
+        if (!im || !im.complete || im.naturalWidth <= 0 || im.naturalHeight <= 0) return null;
+        const aspect = im.naturalWidth / im.naturalHeight;
+        const targetH = heightNorm * dh;
+        const targetW = targetH * aspect;
+        const anchorX = opts.anchorX ?? 0.5;
+        const anchorY = opts.anchorY ?? 0.5;
+        const px = dx + cxNorm * dw;
+        const py = dy + anchorYNorm * dh;
+        const rotRad = opts.rotationRad ?? 0;
+        ctx.save();
+        if (opts.minScreenX !== void 0 || opts.maxScreenX !== void 0) {
+          const x0 = Math.max(0, opts.minScreenX ?? 0);
+          const x1 = Math.max(x0, opts.maxScreenX ?? m.vw);
+          ctx.beginPath();
+          ctx.rect(x0, 0, x1 - x0, m.vh);
+          ctx.clip();
+        }
+        if (opts.clipRect) {
+          ctx.beginPath();
+          ctx.rect(
+            dx + opts.clipRect.x * dw,
+            dy + opts.clipRect.y * dh,
+            opts.clipRect.w * dw,
+            opts.clipRect.h * dh
+          );
+          ctx.clip();
+        }
+        ctx.globalAlpha = Math.max(0, Math.min(1, opts.alpha ?? 1));
+        if (opts.filter) ctx.filter = opts.filter;
+        if (opts.shadow) {
+          ctx.shadowColor = opts.shadowColor ?? "rgba(0, 0, 0, 0.42)";
+          ctx.shadowBlur = opts.shadowBlur ?? 8;
+          ctx.shadowOffsetX = opts.shadowOffsetX ?? 2;
+          ctx.shadowOffsetY = opts.shadowOffsetY ?? 4;
+        }
+        ctx.translate(px, py);
+        if (Math.abs(rotRad) > 1e-4) ctx.rotate(rotRad);
+        ctx.drawImage(im, -targetW * anchorX, -targetH * anchorY, targetW, targetH);
+        ctx.restore();
+        return { x: px, y: py, w: targetW, h: targetH };
+      },
       drawRegionWarp(ctx, rect, opts = {}) {
         const src = opts.sourceKey ? extraImgMap[opts.sourceKey] : imgEl;
         if (!src || !src.complete || src.naturalWidth <= 0) return;
@@ -1254,6 +1299,9 @@ function mountMediaStudio(stageEl, topic) {
           scenarioIdx,
           activeTargetId,
           xrayMode: filterMode === "xray",
+          splitActive,
+          splitScreenX: splitRatio * metrics.vw,
+          isDraggingGizmo: dragMode === "gizmo",
           scale: metrics.effScale,
           paramVal
         },
